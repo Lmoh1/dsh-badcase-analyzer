@@ -1,0 +1,76 @@
+{
+  "name": "dsh-badcase-analyzer",
+  "version": "0.1.0",
+  "description": "DSH 插件：读取评测产出的 Bad Case，按「意图识别偏差 / 实体抽取遗漏 / 逻辑幻觉」三类归因，输出结构化 JSON 报告并在 WebUI 汇总",
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "plugin",
+    "cordis",
+    "badcase",
+    "llm-evaluation",
+    "eval"
+  ],
+  "license": "MIT",
+  "author": "Lmoh1 <2325982192@qq.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lmoh1/dsh-badcase-analyzer.git"
+  },
+  "homepage": "https://github.com/Lmoh1/dsh-badcase-analyzer#readme",
+  "bugs": {
+    "url": "https://github.com/Lmoh1/dsh-badcase-analyzer/issues"
+  },
+  "type": "module",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib/**/*.js",
+    "lib/**/*.d.ts",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "prepare": "npm run build",
+    "typecheck": "tsc -p tsconfig.test.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "smoke": "node scripts/smoke.mjs",
+    "verify": "npm run typecheck && npm run build && npm test && npm run smoke",
+    "clean": "node -e \"require('node:fs').rmSync('lib',{recursive:true,force:true})\""
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": ">=4.0.2 <5",
+    "@deepseek-ai/dsh-tools": ">=0.1.5 <0.3",
+    "@deepseek-ai/dsh-llm": ">=0.1.5 <0.3",
+    "@deepseek-ai/schemastery": ">=3.18.2 <4"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "4.0.2",
+    "@deepseek-ai/dsh-llm": "0.1.5-rc.3",
+    "@deepseek-ai/dsh-tools": "0.1.5-rc.3",
+    "@deepseek-ai/schemastery": "3.18.2",
+    "@types/node": "^22.20.0",
+    "@vitest/coverage-v8": "^4.1.8",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.8"
+  }
+}

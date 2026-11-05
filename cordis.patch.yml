@@ -1,0 +1,29 @@
+# dsh-badcase-analyzer 的组合包层（bundle patch）
+#
+# 这个文件里【没有"路径"可写】：它的 name 是「包名」，不是文件路径。
+# 只有在用 `dsh plugin --profile <name> add dsh-badcase-analyzer` 把本包装进某个 profile 时，
+# 这一层才会被应用（因为 package.json 里声明了 dsh.bundle.patch 指向本文件）；
+# 裸包名由 Node 从 profile 目录逐级向上解析，最终命中 profile 的 node_modules。
+#
+# 本地开发请用同目录下的 cordis.local.yml（--patch 覆盖层），那里才是写文件路径的地方。
+#
+# 用户也可在自己的 profile/cordis.patch.yml 中按 id 覆盖下面这一行的 config
+# （注意：patch 会整体替换 config，需要重述所有键）。
+- insert:
+    - id: badcase-analyzer
+      name: 'dsh-badcase-analyzer'
+      # 默认不写 config，全部走 Config schema 里的默认值（见 src/config.ts）。
+      # 需要自定义时解开注释，键名必须与 Config schema 一致：
+      # config:
+      #   strategy: rule                # rule | llm | rule-then-llm
+      #   maxCases: 200
+      #   llm:
+      #     provider: deepseek-official
+      #     model: deepseek-v4-flash
+      #     temperature: 0
+      #     fallbackToRules: true
+      #   rules:
+      #     confidenceThreshold: 0.55
+      #   report:
+      #     outputPath: ./badcase-report.json
+      #     writeFile: true

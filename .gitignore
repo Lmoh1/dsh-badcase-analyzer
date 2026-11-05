@@ -1,0 +1,30 @@
+# 构建产物（由 tsc 生成，不提交；GitHub 安装时由 prepare 脚本构建）
+lib/
+*.tsbuildinfo
+
+# 依赖
+node_modules/
+
+# 本地打包产物
+*.tgz
+
+# 覆盖率报告（pnpm test:coverage）
+coverage/
+.vitest/
+
+# 本地环境变量与凭证（绝不提交）
+.env
+.env.*
+!.env.example
+
+# 插件运行时生成的分析报告（示例报告放 examples/ 才提交）
+badcase-report*.json
+reports/
+
+# 编辑器 / 系统
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+pnpm-debug.log*

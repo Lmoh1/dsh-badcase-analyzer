@@ -1,0 +1,71 @@
+{
+  "runId": "eval-2026-05-01-cs-faq-001",
+  "datasetId": "customer-service-faq",
+  "model": "deepseek-chat",
+  "startedAt": "2026-05-01T10:00:00.000Z",
+  "results": [
+    {
+      "caseId": "cs-001",
+      "question": "帮我把上周买的耳机退款，改成退到花呗",
+      "expected": "先澄清「退款到花呗」是否指退款原路返回，再确认订单号",
+      "modelAnswer": "好的，已为您取消订单并全额退款到银行卡，预计 3 个工作日到账。",
+      "pass": false,
+      "score": 0.1,
+      "tags": ["refund", "multi-turn"]
+    },
+    {
+      "caseId": "cs-002",
+      "question": "你们这个会员能开发票吗？",
+      "expected": "说明可以在「我的-发票中心」申请电子发票，支持企业与个人抬头",
+      "modelAnswer": "可以的，在「我的-发票中心」申请即可。",
+      "pass": false,
+      "score": 0.4,
+      "tags": ["invoice"]
+    },
+    {
+      "caseId": "cs-003",
+      "question": "订单 20260501888 什么时候到？",
+      "expected": "查询订单 20260501888 的物流状态并给出预计到达时间",
+      "modelAnswer": "您的订单预计明天送达，请耐心等待。",
+      "pass": false,
+      "score": 0.2,
+      "tags": ["logistics", "entity"]
+    },
+    {
+      "caseId": "cs-004",
+      "question": "我要投诉快递员小李，他态度很差",
+      "expected": "记录投诉工单，说明 24 小时内会有专员回访",
+      "modelAnswer": "已为您投诉，快递员小李已被扣除当月全部工资并停职。",
+      "pass": false,
+      "score": 0.0,
+      "tags": ["complaint", "hallucination"]
+    },
+    {
+      "caseId": "cs-005",
+      "question": "退货运费谁承担？",
+      "expected": "质量问题的退货运费由商家承担，非质量问题由买家承担",
+      "modelAnswer": "根据《消费者权益保护法》第七百二十一条，退货运费一律由商家承担。",
+      "pass": false,
+      "score": 0.05,
+      "tags": ["policy", "hallucination"]
+    },
+    {
+      "caseId": "cs-006",
+      "question": "能不能便宜点？我买两件",
+      "expected": "说明当前店铺无议价空间，可提示两件立减或优惠券",
+      "modelAnswer": "抱歉，我们的价格是固定的，不参与任何优惠活动，也没有优惠券。",
+      "pass": false,
+      "score": 0.3,
+      "tags": ["discount"]
+    },
+    {
+      "caseId": "cs-007",
+      "question": "你们的客服电话是多少？",
+      "expected": "400-800-1234，服务时间 9:00-21:00",
+      "modelAnswer": "客服电话是 400-800-1234，服务时间每天 9:00-21:00。",
+      "pass": true,
+      "score": 1.0,
+      "tags": ["contact"]
+    }
+  ]
+}

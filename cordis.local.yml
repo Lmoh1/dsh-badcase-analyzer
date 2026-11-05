@@ -1,0 +1,31 @@
+# 本地开发用的 --patch 覆盖层（等价于官方教程里的 scratch-plugin/cordis.yml）
+#
+# 用法（在 DSH 检出目录里执行，路径可以是相对当前目录的）：
+#   pnpm dsh web --patch "/path/to/dsh-badcase-analyzer/cordis.local.yml"
+#   （Windows 示例：pnpm dsh web --patch "D:/work/dsh-badcase-analyzer/cordis.local.yml"）
+#
+# ── 路径规则（已对照源码核实）─────────────────────────────────────────
+# `packages/boot/app-boot/src/index.ts` 的 anchorInsertedPluginNames 对 insert 行的 name 做如下处理：
+#   * 绝对路径，或以 ./ ../ 开头的相对路径 → 解析成 file:// URL，
+#     **相对路径以本 patch 文件所在目录为基准**（不是当前工作目录，也不是 profile 目录）；
+#   * 其它写法（裸包名，如 'dsh-badcase-analyzer'）→ 走 Node 模块解析，从 profile 目录逐级向上找。
+#     那是「组合包」cordis.patch.yml 的用法，见那个文件。
+#
+# 因此这里写 ./src/index.ts 就够了，不需要写本机绝对路径 —— 本文件可以安全提交到 GitHub。
+#
+# ── 前置条件 ─────────────────────────────────────────────────────────
+# 本插件仓库里必须先装依赖（pnpm install），否则 ./src/index.ts 里
+# '@deepseek-ai/dsh-tools' / '@deepseek-ai/dsh-llm' / '@deepseek-ai/schemastery' 这些 import 解析不到
+# （Node 从「被 import 的文件」所在目录向上找 node_modules，也就是本仓库自己的 node_modules）。
+- insert:
+    - id: badcase-analyzer-dev
+      # 指向源码：dsh 通过 tsx 启动 Host，可以直接加载 .ts，改代码后重启即可生效。
+      name: './src/index.ts'
+      # 指向构建产物（先 pnpm build）：发布/联调用这种方式更接近真实安装形态。
+      # name: './lib/index.js'
+      config:
+        # 开发期建议 rule：零成本、可复现；要试 LLM 路径改成 rule-then-llm。
+        strategy: rule
+        report:
+          # 开发时不落盘，避免在仓库根目录反复生成报告文件。
+          writeFile: false

@@ -1,0 +1,64 @@
+name: CI
+
+# 三道闸门：类型 → 构建 → 测试（单测 + 契约冒烟）。
+# 单测与冒烟都不需要真实 API Key，所以 fork 来的 PR 也能跑满。
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# 同一分支的新提交取消上一次运行，省 CI 分钟
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: verify (node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 与 package.json 的 engines 保持一致
+        node: ['22.x', '24.x']
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          # 提交 pnpm-lock.yaml 之后可以打开缓存，并把 install 改成 --frozen-lockfile：
+          # cache: pnpm
+
+      # prepare 脚本会跑一次 build；CI 里我们显式构建，所以这里跳过生命周期脚本，
+      # 让 install 阶段只负责装依赖（失败原因也更清晰）。
+      # 若某个依赖（老版 esbuild 等）确实需要 postinstall 才能拿到平台二进制，
+      # 去掉 --ignore-scripts 即可。
+      - name: Install
+        run: pnpm install --no-frozen-lockfile --ignore-scripts
+
+      - name: Typecheck (src + tests)
+        run: pnpm typecheck
+
+      - name: Build
+        run: pnpm build
+
+      - name: Unit tests
+        run: pnpm test
+
+      # 工具契约冒烟：校验参数/输出 schema、报告落盘、卡片投影，不调用真实模型
+      - name: Smoke (tool contract, no API key)
+        run: pnpm smoke
